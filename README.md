@@ -1,6 +1,6 @@
 # Building Spotify with Next.js+ tailwindcss + Recoil
 
-This project is based on youtube tutorial https://www.youtube.com/watch?v=3xrko3GpYoU, which allows user to control player on Spotify Application
+This project is based on youtube tutorial https://www.youtube.com/watch?v=3xrko3GpYoU which allows users to control player on Spotify Application. In this project, Web Player was implemented therefore the users can play track on the browser
 
 ## What you need:
 

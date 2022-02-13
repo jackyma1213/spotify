@@ -2,6 +2,7 @@ import { useSession } from "next-auth/react";
 import { useRecoilValue, useRecoilState } from "recoil";
 import { currentTrackIdState, isPlayingState } from "../atoms/songAtom";
 import { playlistState } from "../atoms/playlistAtom";
+import { isShuffleState } from "../atoms/playerAtom";
 import useSpotify from "../hooks/useSpotify";
 import useSongInfo from "../hooks/useSongInfo";
 import { useCallback, useEffect, useState } from "react";
@@ -17,14 +18,17 @@ import {
   ReplyIcon,
   VolumeUpIcon,
 } from "@heroicons/react/solid";
-import { debounce } from "lodash";
+import { debounce, set } from "lodash";
+import usePlayer from "../hooks/usePlayer";
 
 const Player = () => {
   const spotifyApi = useSpotify();
+  const player = usePlayer();
   const { data: session, status } = useSession();
   const [currentTrackId, setCurrentTrackId] =
     useRecoilState(currentTrackIdState);
   const [isPlaying, setIsPlaying] = useRecoilState(isPlayingState);
+  const [isShuffle, setIsShuffle] = useRecoilState(isShuffleState);
   const [volume, setVolume] = useState(50);
 
   const songInfo = useSongInfo();
@@ -87,8 +91,24 @@ const Player = () => {
       </div>
 
       <div className="flex items-center justify-evenly">
-        <SwitchHorizontalIcon className="button" />
-        <RewindIcon className="button" />
+        <SwitchHorizontalIcon
+          className={`button ${isShuffle ? "text-sky-800" : "text-white"}`}
+          onClick={() => {
+            if (isShuffle) {
+              setIsShuffle(false);
+              spotifyApi.setShuffle(false);
+            } else {
+              setIsShuffle(true);
+              spotifyApi.setShuffle(true);
+            }
+          }}
+        />
+        <RewindIcon
+          className="button"
+          onClick={() => {
+            spotifyApi.skipToPrevious();
+          }}
+        />
         {isPlaying ? (
           <PauseIcon
             className="button w-10 h-10"
@@ -104,8 +124,13 @@ const Player = () => {
             }}
           />
         )}
-        <FastForwardIcon className="button" />
-        <ReplyIcon className="button" />
+        <FastForwardIcon
+          className="button"
+          onClick={() => {
+            spotifyApi.skipToNext();
+          }}
+        />
+        <ReplyIcon className="button" onClick={() => {}} />
       </div>
 
       <div className="flex items-center space-x-3 md:space-x-4 justify-end">
