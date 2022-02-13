@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { ChevronDownIcon } from "@heroicons/react/outline";
-import { useSession } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 import { shuffle } from "lodash";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { playlistState, playlistIdState } from "../atoms/playlistAtom";
@@ -40,14 +40,19 @@ function Center() {
   return (
     <div className="flex-grow text-white h-screen overflow-y-scroll scrollbar-hide">
       <header className="absolute top-5 right-8">
-        <div className="group cursor-pointer ">
-          <div className="flex items-center bg-black space-x-3 opacity-90 hover:opacity-80 rounded-full p-1 pr-2 group">
+        <div className="group cursor-pointer text-sm">
+          <div className="flex items-center bg-black space-x-3 opacity-90 hover:opacity-80 rounded-full p-1 pr-2 group ">
             <img className="rounded-full w-10 h-10" src={session?.user.image} />
             <h2>{session?.user.name}</h2>
             <ChevronDownIcon className="h-5 w-5" />
           </div>
-          <div className="hidden group-hover:block bg-gray-800 bg-opacity-50 w-[calc(100%-3rem)] mx-auto rounded-b-md min-h-[2rem] text-center">
-            Logout
+          <div className=" hidden group-hover:flex flex-col bg-black bg-opacity-80 min-w-[calc(100% + 2rem)] mx-auto rounded-md min-h-[2rem] mt-2 text-center">
+            <div
+              className="hover:opacity-50 m-auto w-full"
+              onClick={() => signOut()}
+            >
+              Logout
+            </div>
           </div>
         </div>
       </header>
